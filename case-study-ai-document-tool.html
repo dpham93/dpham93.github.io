@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Portfolio — Case Study: AI‑Powered Document Tool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #0d0d0d; --paper: #f5f2ee; --warm-mid: #e8e2d9;
+    --accent: #c8502a; --accent-soft: #f0e4df; --muted: #7a7570;
+    --border: rgba(13,13,13,0.12);
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans: 'DM Sans', sans-serif; --mono: 'DM Mono', monospace;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.7; overflow-x: hidden; }
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 20px 48px; background: rgba(245,242,238,0.88); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .nav-name { font-family: var(--serif); font-size: 1.05rem; font-weight: 600; letter-spacing: -0.01em; text-decoration: none; color: var(--ink); }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a { font-size: 0.85rem; font-weight: 500; text-decoration: none; color: var(--muted); letter-spacing: 0.02em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--ink); }
+
+  .hero { padding: 160px 48px 80px; max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: end; }
+  .hero-label { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; }
+  .hero-title { font-family: var(--serif); font-size: clamp(2.4rem, 5vw, 3.8rem); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; }
+  .hero-title em { font-style: italic; color: var(--accent); }
+  .hero-sub { margin-top: 24px; font-size: 1.05rem; color: var(--muted); max-width: 480px; line-height: 1.75; }
+  .hero-meta { display: flex; flex-direction: column; gap: 28px; }
+  .meta-item label { display: block; font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  .meta-item p { font-size: 0.9rem; font-weight: 500; line-height: 1.5; }
+
+  .section { max-width: 1100px; margin: 0 auto; padding: 80px 48px; }
+  .section-divider { border: none; border-top: 1px solid var(--border); margin: 0 48px; }
+  .section-label { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+
+  .context-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+  .context-body { font-size: 1.05rem; color: var(--muted); line-height: 1.85; }
+  .context-body strong { color: var(--ink); font-weight: 500; }
+
+  /* Approach strip */
+  .approach-strip { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 40px; }
+  .strip-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 20px 12px; border-right: 1px solid var(--border); text-align: center; background: var(--paper); transition: background 0.2s; }
+  .strip-item:last-child { border-right: none; }
+  .strip-item:hover { background: var(--warm-mid); }
+  .strip-desc { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); line-height: 1.45; }
+  .strip-value { font-family: var(--serif); font-size: 1.4rem; font-weight: 700; color: var(--accent); line-height: 1; }
+
+  /* Tool screenshot */
+  .tool-screenshot { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; aspect-ratio: 16/9; background: var(--warm-mid); position: relative; }
+  .tool-screenshot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .tool-screenshot-placeholder { display: none; position: absolute; inset: 0; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: rgba(13,13,13,0.25); }
+  .tool-screenshot-placeholder svg { width: 36px; height: 36px; }
+  .tool-screenshot-placeholder span { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; }
+  .approach-images { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  /* Research goals */
+  .challenges { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 40px; }
+  .challenge-card { background: var(--warm-mid); border: 1px solid var(--border); border-radius: 8px; padding: 28px 24px; transition: transform 0.25s, box-shadow 0.25s; }
+  .challenge-card:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
+  .challenge-num { font-family: var(--mono); font-size: 0.72rem; color: var(--accent); letter-spacing: 0.1em; margin-bottom: 12px; }
+  .challenge-title { font-weight: 600; font-size: 1rem; margin-bottom: 10px; }
+  .challenge-body { font-size: 0.88rem; color: var(--muted); line-height: 1.7; }
+
+  /* Insights */
+  .insights { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .insight { display: grid; grid-template-columns: 48px 1fr; background: var(--paper); border-bottom: 1px solid var(--border); transition: background 0.2s; }
+  .insight:last-child { border-bottom: none; }
+  .insight:hover { background: var(--warm-mid); }
+  .insight-num { display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 0.75rem; color: var(--accent); border-right: 1px solid var(--border); padding: 20px; }
+  .insight-body { padding: 24px 28px; }
+  .insight-body h4 { font-weight: 600; font-size: 0.95rem; margin-bottom: 6px; }
+  .insight-body p { font-size: 0.875rem; color: var(--muted); line-height: 1.65; }
+
+  /* Metrics row */
+  .metrics-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 48px; }
+  .metric-card { border: 1px solid var(--border); border-radius: 8px; padding: 28px 24px; text-align: center; }
+  .metric-num { font-family: var(--serif); font-size: 2.8rem; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 8px; }
+  .metric-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
+
+  /* Recommendations */
+  .rec-group { margin-bottom: 36px; }
+  .rec-group-title { font-weight: 600; font-size: 1rem; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+  .rec-list { display: flex; flex-direction: column; gap: 10px; }
+  .rec-item { display: flex; align-items: flex-start; gap: 12px; font-size: 0.9rem; color: var(--muted); line-height: 1.65; }
+  .rec-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 8px; }
+
+  /* Reflection */
+  .reflection-box { background: var(--warm-mid); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 32px 36px; font-size: 1rem; color: var(--muted); line-height: 1.85; max-width: 720px; }
+  .reflection-box strong { color: var(--ink); }
+
+  /* Next */
+  .next-section { background: var(--warm-mid); border-radius: 12px; padding: 48px 56px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 48px; }
+  .next-label { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  .next-title { font-family: var(--serif); font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 12px; }
+  .next-sub { font-size: 0.9rem; color: var(--muted); }
+  .next-cta { display: inline-flex; align-items: center; gap: 8px; background: var(--ink); color: var(--paper); padding: 14px 28px; border-radius: 6px; text-decoration: none; font-size: 0.85rem; font-weight: 500; white-space: nowrap; transition: background 0.2s, transform 0.2s; }
+  .next-cta:hover { background: var(--accent); transform: translateY(-1px); }
+
+  footer { max-width: 1100px; margin: 0 auto; padding: 48px 48px 64px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); }
+  .footer-copy { font-size: 0.82rem; color: var(--muted); }
+
+  .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; } .nav-links { gap: 16px; }
+    .hero { grid-template-columns: 1fr; padding: 120px 24px 48px; gap: 40px; }
+    .section { padding: 56px 24px; } .section-divider { margin: 0 24px; }
+    .context-grid, .challenges, .metrics-row { grid-template-columns: 1fr; }
+    .next-section { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-name">Diane Pham</a>
+  <ul class="nav-links"><li><a href="index.html#work">Work</a></li><li><a href="about.html">About</a></li><li><a href="DianePham_Resume.pdf" target="_blank">Resume</a></li></ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero fade-in">
+  <div>
+    <div class="hero-label">Case Study</div>
+    <h1 class="hero-title">AI‑Powered<br><em>Document Tool</em></h1>
+    <p class="hero-sub">Understanding how employees expect to find and learn how to use an internal AI tool for summarizing documents.</p>
+  </div>
+  <div class="hero-meta">
+    <div class="meta-item"><label>Domain</label><p>Internal Tools / AI</p></div>
+    <div class="meta-item"><label>Timeline</label><p>4 Weeks</p></div>
+    <div class="meta-item"><label>My Role</label><p>UX Researcher</p></div>
+    <div class="meta-item"><label>Team</label><p>UX Designer, Product Manager, Developer</p></div>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- CONTEXT -->
+<div class="section fade-in">
+  <div class="section-label">Overview</div>
+  <div class="context-grid">
+    <p class="context-body">Before launching an internal AI tool that summarizes and interacts with uploaded documents, the team wanted to understand how employees expected to find and use it. Because it lived alongside other similar, internal AI tools, there were questions around <strong>discoverability and feature comprehension</strong>.</p>
+    <p class="context-body">My role was to <strong>gather user feedback</strong> around where users naturally look for AI tools, how they interpret these tools' purposes, and how easily they can complete key tasks such as uploading documents and navigating the interface.</p>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- RESEARCH GOALS -->
+<div class="section fade-in">
+  <div class="section-label">Research Goals</div>
+  <h2 style="font-family:var(--serif);font-size:clamp(1.8rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-0.02em;margin-bottom:40px;">What We Set Out to Learn</h2>
+  <div class="challenges">
+    <div class="challenge-card">
+      <div class="challenge-num">Goal 01</div>
+      <div class="challenge-title">Tool Discoverability</div>
+      <div class="challenge-body">Where do users expect to access this suite of AI tools? Is the current entry point intuitive, or does it require hunting?</div>
+    </div>
+    <div class="challenge-card">
+      <div class="challenge-num">Goal 02</div>
+      <div class="challenge-title">Tool Differentiation</div>
+      <div class="challenge-body">Do users understand the difference between the various AI tools? Can they identify which tool to use for which task?</div>
+    </div>
+    <div class="challenge-card">
+      <div class="challenge-num">Goal 03</div>
+      <div class="challenge-title">Core Task Usability</div>
+      <div class="challenge-body">How easily can users upload documents and interact with the summaries?</div>
+    </div>
+    <div class="challenge-card">
+      <div class="challenge-num">Goal 04</div>
+      <div class="challenge-title">First-Time Expectations</div>
+      <div class="challenge-body">What do users expect the tool to do before they've used it? Does the landing page set accurate expectations?</div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- APPROACH -->
+<div class="section fade-in">
+  <div class="section-label">Approach</div>
+  <h2 style="font-family:var(--serif);font-size:clamp(1.8rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-0.02em;margin-bottom:24px;">Exploring How Users Discover and Use the Tool</h2>
+
+  <div class="approach-strip">
+    <div class="strip-item">
+      <div class="strip-desc">Participants</div>
+      <div class="strip-value">8</div>
+    </div>
+    <div class="strip-item">
+      <div class="strip-desc">Timeline</div>
+      <div class="strip-value">4 weeks</div>
+    </div>
+    <div class="strip-item">
+      <div class="strip-desc">Method</div>
+      <div class="strip-value">Usability testing</div>
+    </div>
+  </div>
+
+  <p style="font-size:1rem;color:var(--muted);line-height:1.85;max-width:720px;margin-bottom:40px;">We recruited 8 employees, most of whom had prior experience with AI tools like ChatGPT or Copilot. Their common use cases included editing writing, reviewing documents, searching for information, and planning tasks — giving us a strong baseline for evaluating expectations.</p>
+
+    <p style="font-size:1rem;color:var(--muted);line-height:1.85;max-width:720px;margin-bottom:40px;">First, users were given a description of the tool and asked where they expect to find it and what they expected it to be called. Users were then given tasks using the tool (uploading documents, switching views, and resizing) and asked for their feedback.</p>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+    <div>
+      <div class="tool-screenshot">
+        <img src="doc_script.png" alt="Discussion guide" style="width:100%;height:100%;object-fit:cover;display:block;" />
+      </div>
+      <p style="font-family:var(--mono);font-size:0.65rem;letter-spacing:0.06em;color:var(--muted);line-height:1.6;margin-top:12px;">Research script used during sessions.</p>
+    </div>
+    <div>
+      <div class="tool-screenshot">
+        <img src="doc_session.png" alt="Example test session" style="width:100%;height:100%;object-fit:cover;display:block;" />
+      </div>
+      <p style="font-family:var(--mono);font-size:0.65rem;letter-spacing:0.06em;color:var(--muted);line-height:1.6;margin-top:12px;">Example usability test session with a participant.</p>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- KEY FINDINGS -->
+<div class="section fade-in">
+  <div class="section-label">Key Findings</div>
+  <h2 style="font-family:var(--serif);font-size:clamp(1.8rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-0.02em;margin-bottom:48px;">What Users Revealed</h2>
+  <div class="insights">
+    <div class="insight">
+      <div class="insight-num">1</div>
+      <div class="insight-body">
+        <h4>Users Struggled to Understand the Tool's Purpose from Its Name Alone</h4>
+        <p>Many participants couldn't infer what the tool did based on its name, leading them to misclassify it as storage, transcription, or general document help. This created early friction and uncertainty about where to upload documents.</p>
+      </div>
+    </div>
+    <div class="insight">
+      <div class="insight-num">2</div>
+      <div class="insight-body">
+        <h4>Discoverability Depends Heavily on Clear Entry Points</h4>
+        <p>While the waffle menu ultimately made sense, only half of users guessed it correctly. Because the menu shows different tools for different people, relying on it alone risks low visibility.</p>
+      </div>
+    </div>
+    <div class="insight">
+      <div class="insight-num">3</div>
+      <div class="insight-body">
+        <h4>First-Time Users Need More Context to Feel Confident</h4>
+        <p>The landing page communicated security and simplicity, but several users wanted clearer explanations of what the tool does and how to get started.</p>
+      </div>
+    </div>
+    <div class="insight">
+      <div class="insight-num">4</div>
+      <div class="insight-body">
+        <h4>Core Tasks Like Uploading Documents Were Intuitive and Successful</h4>
+        <p>All participants completed the upload flow easily and rated it highly. The mental model for "upload → get summary" aligned well with expectations once users understood the tool's purpose.</p>
+      </div>
+    </div>
+    <div class="insight">
+      <div class="insight-num">5</div>
+      <div class="insight-body">
+        <h4>Secondary Interactions Like Resizing Were Not Discoverable</h4>
+        <p>Most users overlooked the resizer bar and tried unrelated controls. Once found, the feature made sense, but its visual affordance was too subtle.</p>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="metrics-row" style="grid-template-columns:1fr 1fr;">
+    <div class="metric-card">
+      <div class="metric-num">4.9<span style="font-size:1.4rem;">/5</span></div>
+      <div class="metric-desc">Average rating for document upload task — completed successfully by all participants</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-num">4.57<span style="font-size:1.4rem;">/5</span></div>
+      <div class="metric-desc">Overall ease-of-use rating across all participants</div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- RECOMMENDATIONS -->
+<div class="section fade-in">
+  <div class="section-label">Recommendations</div>
+  <h2 style="font-family:var(--serif);font-size:clamp(1.8rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-0.02em;margin-bottom:48px;">What We Recommended</h2>
+
+  <div class="rec-group">
+    <div class="rec-group-title">Improve Discoverability of the Resizing Feature</div>
+    <div class="rec-list">
+      <div class="rec-item"><div class="rec-dot"></div><span>Increase the width of the resizer bar to make it easier to notice and interact with</span></div>
+      <div class="rec-item"><div class="rec-dot"></div><span>Use a more noticeable colour to differentiate it from surrounding UI elements</span></div>
+      <div class="rec-item"><div class="rec-dot"></div><span>Adjust arrow size for better visibility and affordance</span></div>
+    </div>
+  </div>
+
+  <div class="rec-group">
+    <div class="rec-group-title">Increase Awareness of DocuChat</div>
+    <div class="rec-list">
+      <div class="rec-item"><div class="rec-dot"></div><span>Promote the tool through internal communications ahead of launch</span></div>
+      <div class="rec-item"><div class="rec-dot"></div><span>Highlight the tool on the company's intranet to improve findability</span></div>
+      <div class="rec-item"><div class="rec-dot"></div><span>Consider surfacing it in multiple locations beyond the waffle menu</span></div>
+    </div>
+  </div>
+
+  <div class="rec-group">
+    <div class="rec-group-title">Enhance First-Time User Guidance</div>
+    <div class="rec-list">
+      <div class="rec-item"><div class="rec-dot"></div><span>Add clearer, more approachable language on the landing page explaining the tool's purpose</span></div>
+      <div class="rec-item"><div class="rec-dot"></div><span>Consider a tutorial or onboarding message for first-time users</span></div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- IMPACT -->
+<div class="section fade-in">
+  <div class="section-label">Impact</div>
+  <h2 style="font-family:var(--serif);font-size:clamp(1.8rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-0.02em;margin-bottom:32px;">From Study to Launch</h2>
+  <div class="reflection-box">
+    <p>This study clarified how employees think about AI tools within the company's ecosystem and revealed key opportunities to improve discoverability, naming clarity, and first-time usability. The findings directly informed design updates ahead of launch and shaped the communication strategy for introducing the tool to the organization.</p>
+  </div>
+</div>
+
+<hr class="section-divider" style="margin-top:80px;" />
+
+<!-- NEXT -->
+<div class="section fade-in">
+  <div class="next-section">
+    <div>
+      <div class="next-label">Next Case Study</div>
+      <h2 class="next-title">Destination Voice Bot</h2>
+      <p class="next-sub">Validating a voice bot for users and uncovering what they needed next.</p>
+    </div>
+    <a href="case-study-voice-bot.html" class="next-cta">View Case Study →</a>
+  </div>
+</div>
+
+<footer>
+  <span class="footer-copy">Diane Pham © 2025 · UX Researcher</span>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.08 });
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
